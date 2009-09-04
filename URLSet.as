@@ -88,10 +88,10 @@ package com.collectivecolors.data
 		 */
 		public function addUrl( url : String ) : void
 		{
-			// Clean url
+			// Clean url.
 			url = StringUtil.trim( url );
 			
-			// Validate url
+			// Validate url.
 			var urlError : ValidationResultEvent = validator.validate( url, true );
 			
 			if ( urlError.type == ValidationResultEvent.INVALID )
