@@ -42,7 +42,9 @@ package com.collectivecolors.data
      */ 
     public function set allowedProtocols( values : Array ) : void
     {
-      validator.allowedProtocols = values;  
+      validator.allowedProtocols = values;
+      
+      checkUrls( );  
     }
     
     /**
@@ -51,6 +53,8 @@ package com.collectivecolors.data
     public function set allowedFileExtensions( values : Array ) : void
     {
       validator.allowedFileExtensions = values;
+      
+      checkUrls( );
     }
     
     /**
@@ -108,7 +112,7 @@ package com.collectivecolors.data
 		}
 		
 		/**
-		 * Remove an eexisting URL from this set.
+		 * Remove an existing URL from this set.
 		 */
 		public function removeUrl( url : String ) : void
 		{
@@ -117,6 +121,27 @@ package com.collectivecolors.data
 		  
 		  // Clear cache.
 		  urlCache = null;
+		}
+		
+		/**
+		 * Make sure all URLs in this set are of the correct protocol and extension.
+		 * 
+		 * This is called when these settings change.
+		 */
+		private function checkUrls( ) : void
+		{
+		  // Go through all existing urls.
+		  for each ( var url : String in urls )
+		  {
+		    // Validate url.
+			  var urlError : ValidationResultEvent = validator.validate( url, true );
+			
+			  if ( urlError.type == ValidationResultEvent.INVALID )
+			  {			
+				  // Bad url input.  Remove from this set.
+				  removeUrl( url );
+			  }
+		  }
 		}
 	}
 }
