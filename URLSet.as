@@ -20,6 +20,8 @@ package com.collectivecolors.data
 		private var urlCache : Array;
 		
 		private var validator : URLValidator;
+		
+		private var deletedUrlsCache : Array;
     
     //--------------------------------------------------------------------------
     // Constructor
@@ -40,17 +42,17 @@ package com.collectivecolors.data
     /**
      * Set allowed protocols for URLs in this set.
      */ 
-    public function set allowedProtocols( values : Array ) : void
+    public function set allowedProtocols( values : Array ):void
     {
       validator.allowedProtocols = values;
-      
-      checkUrls( );  
+            
+      checkUrls( );
     }
     
     /**
      * Set allowed file extensions for URLs in this set.
      */ 
-    public function set allowedFileExtensions( values : Array ) : void
+    public function set allowedFileExtensions( values : Array ):void
     {
       validator.allowedFileExtensions = values;
       
@@ -86,6 +88,14 @@ package com.collectivecolors.data
 		    addUrl( url );
 		  }  
 		}
+		
+		/**
+		 * Get all URLs that were deleted upon last protocol/extension update
+		 */
+		 public function get deletedUrls( ) : Array
+		 {
+		 	return deletedUrlsCache;
+		 }
 		
 		/**
 		 * Add a single URL to this set.
@@ -130,6 +140,9 @@ package com.collectivecolors.data
 		 */
 		private function checkUrls( ) : void
 		{
+		  // Create an array to house the deleted URLs
+		  deletedUrlsCache = [ ];	
+			
 		  // Go through all existing urls.
 		  for each ( var url : String in urls )
 		  {
@@ -137,7 +150,9 @@ package com.collectivecolors.data
 			  var urlError : ValidationResultEvent = validator.validate( url, true );
 			
 			  if ( urlError.type == ValidationResultEvent.INVALID )
-			  {			
+			  {	  
+			  	  // Add deleted URL to deletedUrls array
+			  	  deletedUrlsCache.push(url);		
 				  // Bad url input.  Remove from this set.
 				  removeUrl( url );
 			  }
